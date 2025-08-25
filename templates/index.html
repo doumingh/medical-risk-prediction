@@ -7,9 +7,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-    <!-- 备用CDN源 -->
+    <!-- Backup CDN source -->
     <script>
-        // 如果主CDN加载失败，尝试备用源
+        // If main CDN fails to load, try backup source
         if (typeof Plotly === 'undefined') {
             document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"><\/script>');
         }
@@ -295,7 +295,7 @@
     </style>
 </head>
 <body>
-    <!-- 状态指示器 -->
+    <!-- Status indicator -->
     <div class="status-indicator">
         {% if model_loaded %}
         <span class="status-badge status-success">
@@ -310,17 +310,17 @@
 
     <div class="container-fluid">
         <div class="main-container">
-            <!-- 页面头部 -->
+            <!-- Page header -->
             <div class="header">
                 <h1><i class="fas fa-heartbeat"></i> Medical Risk Prediction System</h1>
                 <p>Intelligent Medical Risk Assessment Platform Based on Machine Learning</p>
             </div>
 
-            <!-- 左右布局容器 -->
+            <!-- Left-right layout container -->
             <div class="row">
-                <!-- 左侧：输入信息和预测结果 -->
+                <!-- Left: Input information and prediction results -->
                 <div class="col-md-6 left-section">
-                    <!-- 参数输入区域 -->
+                    <!-- Parameter input area -->
                     <div class="form-section">
                         <form method="POST" action="/predict" id="predictionForm">
                             <h4 class="mb-3"><i class="fas fa-user-md"></i> Patient Basic Information</h4>
@@ -358,7 +358,7 @@
                                     <div class="base-option" id="broad-base-option">
                                         <input class="form-check-input" type="radio" name="Base" id="broad_base" value="2" {% if default_fundus == 2 %}checked{% endif %}>
                                         <label class="form-check-label" for="broad_base">
-                                            Broad base
+                                            Broad Base
                                         </label>
                                     </div>
                                 </div>
@@ -372,7 +372,7 @@
                         </form>
                     </div>
 
-                    <!-- 加载动画 -->
+                    <!-- Loading animation -->
                     <div class="loading" id="loading">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -380,7 +380,7 @@
                         <p class="mt-2 text-muted">Analyzing data, please wait...</p>
                     </div>
 
-                    <!-- 预测结果显示区域 -->
+                    <!-- Prediction result display area -->
                     <div class="result-section" id="resultSection" {% if not result %}style="display: none;"{% endif %}>
                         {% if error %}
                         <div class="error-alert">
@@ -391,7 +391,7 @@
                         {% if result %}
                         <h3 class="mb-3"><i class="fas fa-chart-line"></i> Prediction Results</h3>
                         
-                        <!-- 风险等级卡片 -->
+                        <!-- Risk level card -->
                         <div class="risk-card">
                             <div class="risk-level risk-{{ result.risk_level.lower().replace(' ', '-') }}" id="riskLevelDisplay">
                                 {{ result.risk_level_cn }}
@@ -420,11 +420,11 @@
                     </div>
                 </div>
 
-                <!-- 右侧：SHAP图表 -->
+                <!-- Right: SHAP charts -->
                 <div class="col-md-6 right-section">
                     <div class="charts-section">
                         {% if result and waterfall_path and force_path %}
-                        <!-- SHAP瀑布图 -->
+                        <!-- SHAP waterfall chart -->
                         <div class="chart-container">
                             <h5 class="mb-2"><i class="fas fa-chart-bar"></i> SHAP Waterfall Chart</h5>
                             <div class="text-center">
@@ -435,7 +435,7 @@
                             </p>
                         </div>
                         
-                        <!-- SHAP力图 -->
+                        <!-- SHAP force chart -->
                         <div class="chart-container mt-2">
                             <h5 class="mb-2"><i class="fas fa-chart-line"></i> SHAP Force Chart</h5>
                             <div class="text-center">
@@ -470,9 +470,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // 表单提交处理
+        // Form submission handling
         document.getElementById('predictionForm').addEventListener('submit', function(e) {
-            // 验证Base选项是否被选择
+            // Validate if Base option is selected
             const baseOptions = document.querySelectorAll('input[name="Base"]:checked');
             if (baseOptions.length === 0) {
                 e.preventDefault();
@@ -480,7 +480,7 @@
                 return;
             }
             
-            // 验证短径不能超过长径
+            // Validate that short diameter cannot exceed long diameter
             const longDiameter = parseFloat(document.querySelector('input[name="long_diameter"]').value);
             const shortDiameter = parseFloat(document.querySelector('input[name="short_diameter"]').value);
             
@@ -490,7 +490,7 @@
                 return;
             }
             
-            // 保存用户输入的所有参数值到localStorage
+            // Save all user input parameter values to localStorage
             const formData = {
                 age: document.querySelector('input[name="age"]').value,
                 polyps: document.querySelector('input[name="polyps"]').value,
@@ -500,19 +500,19 @@
             };
             localStorage.setItem('user_input_values', JSON.stringify(formData));
             
-            // 清除旧的缓存
+            // Clear old cache
             clearCachedRequestId();
             
-            // 生成唯一的请求ID
+            // Generate unique request ID
             const requestId = generateUUID();
             
-            // 将新的request_id保存到localStorage
+            // Save new request_id to localStorage
             localStorage.setItem('current_request_id', requestId);
             
-            // 同时保存时间戳，用于验证缓存是否过期
+            // Also save timestamp to verify if cache is expired
             localStorage.setItem('request_timestamp', Date.now().toString());
             
-            // 创建隐藏的input字段来传递请求ID
+            // Create hidden input field to pass request ID
             let requestIdInput = document.getElementById('request_id');
             if (!requestIdInput) {
                 requestIdInput = document.createElement('input');
@@ -523,20 +523,20 @@
             }
             requestIdInput.value = requestId;
             
-            // 清除上一次的预测结果和图片
+            // Clear previous prediction results and images
             clearPreviousResults();
             
-            // 显示加载状态
+            // Show loading state
             document.getElementById('loading').style.display = 'block';
             document.getElementById('resultSection').style.display = 'none';
             
-            // 延迟设置风险等级颜色（等待页面重新加载后）
+            // Delay setting risk level color (wait for page reload)
             setTimeout(() => {
                 setRiskLevelColor();
             }, 1000);
         });
 
-        // 输入验证
+        // Input validation
         document.querySelectorAll('input[type="number"]').forEach(function(input) {
             input.addEventListener('input', function() {
                 if (this.value < 0) {
@@ -545,59 +545,59 @@
             });
         });
 
-        // 添加实时验证提示：短径不能超过长径
+        // Add real-time validation tip: short diameter cannot exceed long diameter
         document.querySelector('input[name="short_diameter"]').addEventListener('input', function() {
             const longDiameter = parseFloat(document.querySelector('input[name="long_diameter"]').value);
             const shortDiameter = parseFloat(this.value);
             
-            // 移除之前的验证提示
+            // Remove previous validation tip
             const existingTip = document.querySelector('.validation-tip');
             if (existingTip) {
                 existingTip.remove();
             }
             
             if (shortDiameter > longDiameter && longDiameter > 0) {
-                // 显示验证提示
+                // Show validation tip
                 const tipDiv = document.createElement('div');
                 tipDiv.className = 'validation-tip text-danger small mt-1';
                 tipDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Short diameter should not exceed long diameter';
                 
-                // 插入到短径输入框后面
+                // Insert after short diameter input field
                 this.parentNode.appendChild(tipDiv);
             }
         });
         
-        // 当长径改变时，也检查短径
+        // When long diameter changes, also check short diameter
         document.querySelector('input[name="long_diameter"]').addEventListener('input', function() {
             const shortDiameterInput = document.querySelector('input[name="short_diameter"]');
             const longDiameter = parseFloat(this.value);
             const shortDiameter = parseFloat(shortDiameterInput.value);
             
-            // 移除之前的验证提示
+            // Remove previous validation tip
             const existingTip = document.querySelector('.validation-tip');
             if (existingTip) {
                 existingTip.remove();
             }
             
             if (shortDiameter > longDiameter && longDiameter > 0) {
-                // 显示验证提示
+                // Show validation tip
                 const tipDiv = document.createElement('div');
                 tipDiv.className = 'validation-tip text-danger small mt-1';
                 tipDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Short diameter should not exceed long diameter';
                 
-                // 插入到短径输入框后面
+                // Insert after short diameter input field
                 shortDiameterInput.parentNode.appendChild(tipDiv);
             }
         });
 
-        // 为Base选项添加视觉反馈
+        // Add visual feedback for Base options
         document.querySelectorAll('input[name="Base"]').forEach(function(radio) {
             radio.addEventListener('change', function() {
-                // 简单的radio button行为，不需要特殊样式
+                // Simple radio button behavior, no special styling needed
             });
         });
 
-        // 生成UUID的函数
+        // Function to generate UUID
         function generateUUID() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
                 const r = Math.random() * 16 | 0;
@@ -606,30 +606,30 @@
             });
         }
         
-        // 获取缓存的request_id
+        // Get cached request_id
         function getCachedRequestId() {
             return localStorage.getItem('current_request_id');
         }
         
-        // 清除缓存的request_id
+        // Clear cached request_id
         function clearCachedRequestId() {
             localStorage.removeItem('current_request_id');
             localStorage.removeItem('request_timestamp');
         }
         
-        // 验证缓存是否有效（24小时内有效）
+        // Verify if cache is valid (valid for 24 hours)
         function isCacheValid() {
             const timestamp = localStorage.getItem('request_timestamp');
             if (!timestamp) return false;
             
             const cacheTime = parseInt(timestamp);
             const currentTime = Date.now();
-            const maxAge = 24 * 60 * 60 * 1000; // 24小时
+            const maxAge = 24 * 60 * 60 * 1000; // 24 hours
             
             return (currentTime - cacheTime) < maxAge;
         }
         
-        // 清理过期的缓存
+        // Clean up expired cache
         function cleanupExpiredCache() {
             if (!isCacheValid()) {
                 clearCachedRequestId();
@@ -638,7 +638,7 @@
             return true;
         }
         
-        // 显示当前缓存状态（调试用）
+        // Show current cache status (for debugging)
         function showCacheStatus() {
             const requestId = getCachedRequestId();
             const timestamp = localStorage.getItem('request_timestamp');
@@ -656,13 +656,13 @@
             console.log('===================');
         }
         
-        // 清除上一次的预测结果和图片
+        // Clear previous prediction results and images
         function clearPreviousResults() {
-            // 清除左侧的预测结果
+            // Clear left side prediction results
             const resultSection = document.getElementById('resultSection');
             if (resultSection) {
                 resultSection.style.display = 'none';
-                // 清空结果内容
+                // Clear result content
                 const riskCard = resultSection.querySelector('.risk-card');
                 if (riskCard) {
                     riskCard.remove();
@@ -673,16 +673,16 @@
                 }
             }
             
-            // 清除右侧的SHAP图表
+            // Clear right side SHAP charts
             const chartsSection = document.querySelector('.charts-section');
             if (chartsSection) {
-                // 清除所有图表容器
+                // Clear all chart containers
                 const chartContainers = chartsSection.querySelectorAll('.chart-container');
                 chartContainers.forEach(container => {
                     container.remove();
                 });
                 
-                // 显示等待状态
+                // Show waiting state
                 chartsSection.innerHTML = `
                     <div class="chart-container">
                         <div class="text-center text-muted py-5">
@@ -694,12 +694,12 @@
                 `;
             }
             
-            console.log('✅ 已清除上一次的预测结果和图片');
+            console.log('✅ Previous prediction results and images cleared');
         }
         
-        // 显示消息的函数
+        // Function to show messages
         function showMessage(message, type = 'info') {
-            // 创建消息元素
+            // Create message element
             let alertClass = 'alert-info';
             let iconClass = 'info-circle';
             
@@ -722,11 +722,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             `;
             
-            // 插入到表单区域前面
+            // Insert before form section
             const formSection = document.querySelector('.form-section');
             formSection.parentNode.insertBefore(messageDiv, formSection);
             
-            // 错误消息显示5秒，其他消息显示3秒
+            // Error messages display for 5 seconds, others for 3 seconds
             const displayTime = type === 'error' ? 5000 : 3000;
             setTimeout(() => {
                 if (messageDiv.parentNode) {
@@ -735,37 +735,37 @@
             }, displayTime);
         }
         
-        // 设置风险等级颜色的函数
+        // Function to set risk level color
         function setRiskLevelColor() {
             const riskLevelElement = document.getElementById('riskLevelDisplay');
             if (riskLevelElement) {
                 const riskLevel = riskLevelElement.textContent.trim();
-                let color = '#6c757d'; // 默认颜色
+                let color = '#6c757d'; // Default color
                 
                 if (riskLevel === 'Low Risk') {
-                    color = '#28a745'; // 绿色
+                    color = '#28a745'; // Green
                 } else if (riskLevel === 'Moderate Risk') {
-                    color = '#ffc107'; // 黄色
+                    color = '#ffc107'; // Yellow
                 } else if (riskLevel === 'High Risk') {
-                    color = '#fd7e14'; // 橙色
+                    color = '#fd7e14'; // Orange
                 } else if (riskLevel === 'Very High Risk') {
-                    color = '#dc3545'; // 红色
+                    color = '#dc3545'; // Red
                 }
                 
                 riskLevelElement.style.color = color;
-                console.log('设置风险等级颜色:', riskLevel, color);
+                console.log('Set risk level color:', riskLevel, color);
             }
         }
         
-        // 恢复用户输入值的函数
+        // Function to restore user input values
         function restoreUserInputValues() {
             const savedValues = localStorage.getItem('user_input_values');
             if (savedValues) {
                 try {
                     const formData = JSON.parse(savedValues);
-                    console.log('恢复用户输入值:', formData);
+                    console.log('Restore user input values:', formData);
                     
-                    // 恢复各个输入字段的值
+                    // Restore values for each input field
                     if (formData.age) {
                         document.querySelector('input[name="age"]').value = formData.age;
                     }
@@ -779,74 +779,74 @@
                         document.querySelector('input[name="short_diameter"]').value = formData.short_diameter;
                     }
                     if (formData.base) {
-                        // 恢复Base选项的选中状态
+                        // Restore Base option selection state
                         const baseRadio = document.querySelector(`input[name="Base"][value="${formData.base}"]`);
                         if (baseRadio) {
                             baseRadio.checked = true;
                         }
                     }
                     
-                    console.log('✅ 用户输入值已恢复');
+                    console.log('✅ User input values restored');
                 } catch (error) {
-                    console.error('恢复用户输入值时出错:', error);
+                    console.error('Error occurred while restoring user input values:', error);
                 }
             }
         }
         
-        // 页面加载完成后的初始化
+        // Initialize after page load
         document.addEventListener('DOMContentLoaded', function() {
-            // 清理过期的缓存
+            // Clean up expired cache
             cleanupExpiredCache();
             
-            // 检查是否有有效的缓存的request_id
+            // Check if there's a valid cached request_id
             const cachedRequestId = getCachedRequestId();
             
             if (cachedRequestId && isCacheValid()) {
                 console.log('Found valid cached request_id:', cachedRequestId);
                 console.log('Cache timestamp:', localStorage.getItem('request_timestamp'));
-                // 如果有有效的缓存，可以在这里做一些处理
+                // If there's valid cache, can do some processing here
             } else if (cachedRequestId) {
                 console.log('Found expired cached request_id:', cachedRequestId);
-                // 清除过期的缓存
+                // Clear expired cache
                 clearCachedRequestId();
             } else {
                 console.log('No cached request_id found');
             }
             
-            // 显示缓存状态（调试用）
+            // Show cache status (for debugging)
             showCacheStatus();
             
-            // 恢复用户输入的值（如果有的话）
+            // Restore user input values (if any)
             restoreUserInputValues();
             
-            // 检查是否有预测结果需要显示
+            // Check if there are prediction results to display
             const resultSection = document.getElementById('resultSection');
             if (resultSection) {
-                // 检查是否有结果数据（通过检查页面中是否存在结果相关的元素）
+                // Check if there are result data (by checking if result-related elements exist on page)
                 const hasResult = document.querySelector('.risk-card') !== null;
                 const hasError = document.querySelector('.error-alert') !== null;
                 
                 if (hasResult || hasError) {
-                    // 如果有结果或错误，显示结果区域
+                    // If there are results or errors, show result area
                     resultSection.style.display = 'block';
-                    console.log('显示结果区域：有预测结果或错误信息');
+                    console.log('Show result area: has prediction results or error messages');
                 } else {
-                    // 如果没有结果，隐藏结果区域
+                    // If no results, hide result area
                     resultSection.style.display = 'none';
-                    console.log('隐藏结果区域：无预测结果');
+                    console.log('Hide result area: no prediction results');
                 }
             }
             
-            // 根据后端传递的default_fundus值设置默认选中状态
+            // Set default selection state based on default_fundus value passed from backend
             const pedicleRadio = document.getElementById('pedicle');
             const broadBaseRadio = document.getElementById('broad_base');
             
-            // 如果没有任何选项被选中，默认选中Pedicle
+            // If no option is selected, default to Pedicle
             if (pedicleRadio && broadBaseRadio && !pedicleRadio.checked && !broadBaseRadio.checked) {
                 pedicleRadio.checked = true;
             }
             
-            // 设置风险等级颜色
+            // Set risk level color
             setRiskLevelColor();
         });
     </script>
